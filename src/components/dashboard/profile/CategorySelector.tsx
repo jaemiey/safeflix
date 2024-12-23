@@ -22,10 +22,9 @@ export function CategorySelector({
   console.log("CategorySelector rendered with categories:", categories);
   console.log("Selected categories:", selectedCategories);
 
-  const handleSelect = (categoryId: string) => {
+  const handleSelect = (currentValue: string, categoryId: string) => {
     console.log("Category selected:", categoryId);
     onCategorySelect(categoryId);
-    // Don't close the popover to allow multiple selections
   };
 
   return (
@@ -48,12 +47,12 @@ export function CategorySelector({
           <CommandInput placeholder="Search categories..." />
           <CommandEmpty>No category found.</CommandEmpty>
           <CommandGroup>
-            {categories && categories.length > 0 ? (
+            {categories.length > 0 ? (
               categories.map((category) => (
                 <CommandItem
                   key={category.id}
                   value={category.name}
-                  onSelect={() => handleSelect(category.id)}
+                  onSelect={(currentValue) => handleSelect(currentValue, category.id)}
                 >
                   <Check
                     className={cn(
