@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -6,13 +6,34 @@ import { motion } from "framer-motion";
 const Index = () => {
   const navigate = useNavigate();
   const [isHovered, setIsHovered] = useState(false);
+  
+  // Check if user was previously logged in
+  useEffect(() => {
+    const lastSession = localStorage.getItem('safeflix-session');
+    if (lastSession) {
+      console.log('Found previous session:', lastSession);
+      // You can use this to auto-redirect to dashboard if needed
+    }
+  }, []);
+
+  const handleSignIn = () => {
+    // Store last login attempt timestamp
+    localStorage.setItem('safeflix-last-login', new Date().toISOString());
+    navigate("/login");
+  };
+
+  const handleGetStarted = () => {
+    // Store user's initial interaction
+    localStorage.setItem('safeflix-signup-started', 'true');
+    navigate("/signup");
+  };
 
   return (
     <div className="min-h-screen bg-safeflix-dark text-white">
       <nav className="fixed w-full z-50 flex justify-between items-center px-8 py-4 bg-gradient-to-b from-black/80 to-transparent">
         <h1 className="text-3xl font-bold text-safeflix-primary">SafeFlix</h1>
         <Button
-          onClick={() => navigate("/login")}
+          onClick={handleSignIn}
           className="bg-safeflix-primary hover:bg-safeflix-primary/80 transition-all duration-300"
         >
           Sign In
@@ -48,7 +69,7 @@ const Index = () => {
             <Button
               onMouseEnter={() => setIsHovered(true)}
               onMouseLeave={() => setIsHovered(false)}
-              onClick={() => navigate("/signup")}
+              onClick={handleGetStarted}
               className="bg-safeflix-primary hover:bg-safeflix-primary/80 text-lg px-8 py-6 transition-all duration-300 transform hover:scale-105"
             >
               Get Started
@@ -62,7 +83,10 @@ const Index = () => {
             </Button>
             <Button
               variant="outline"
-              onClick={() => navigate("/learn-more")}
+              onClick={() => {
+                localStorage.setItem('safeflix-last-page', 'learn-more');
+                navigate("/learn-more");
+              }}
               className="text-lg px-8 py-6 border-2 hover:bg-white/10 transition-all duration-300"
             >
               Learn More
