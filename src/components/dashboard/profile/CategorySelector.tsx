@@ -20,6 +20,13 @@ export function CategorySelector({
   onOpenChange 
 }: CategorySelectorProps) {
   console.log("CategorySelector rendered with categories:", categories);
+  console.log("Selected categories:", selectedCategories);
+
+  const handleSelect = (categoryId: string) => {
+    console.log("Category selected:", categoryId);
+    onCategorySelect(categoryId);
+    // Don't close the popover to allow multiple selections
+  };
 
   return (
     <Popover open={open} onOpenChange={onOpenChange}>
@@ -45,11 +52,8 @@ export function CategorySelector({
               categories.map((category) => (
                 <CommandItem
                   key={category.id}
-                  value={category.id}
-                  onSelect={() => {
-                    console.log("Category selected:", category.id);
-                    onCategorySelect(category.id);
-                  }}
+                  value={category.name}
+                  onSelect={() => handleSelect(category.id)}
                 >
                   <Check
                     className={cn(
