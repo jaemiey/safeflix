@@ -24,7 +24,6 @@ export function ProfileCard({ profile, categories, onUpdate, onDelete }: Profile
   const { toast } = useToast();
   const [editingProfile, setEditingProfile] = useState(null);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
-  const [open, setOpen] = useState(false);
 
   const getVideoCount = (profile) => {
     const videos = JSON.parse(localStorage.getItem("videos") || "[]");
@@ -107,8 +106,6 @@ export function ProfileCard({ profile, categories, onUpdate, onDelete }: Profile
                     }));
                   }}
                   categories={categories}
-                  open={open}
-                  onOpenChange={setOpen}
                 />
                 <Button onClick={handleEditProfile} className="w-full">
                   Save Changes

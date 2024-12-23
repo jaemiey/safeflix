@@ -12,7 +12,6 @@ export function ProfileForm() {
     return JSON.parse(localStorage.getItem("kidsProfiles") || "[]");
   });
   const [newProfile, setNewProfile] = useState({ name: "", age: "" });
-  const [open, setOpen] = useState(false);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const categories = JSON.parse(localStorage.getItem("videoCategories") || "[]");
 
@@ -99,8 +98,6 @@ export function ProfileForm() {
               });
             }}
             categories={categories}
-            open={open}
-            onOpenChange={setOpen}
           />
           <Button onClick={handleCreateProfile} className="w-full">
             Create Profile
