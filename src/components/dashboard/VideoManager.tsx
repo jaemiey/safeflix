@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 
 export function VideoManager() {
   const { toast } = useToast();
@@ -45,14 +45,36 @@ export function VideoManager() {
       videoId,
     };
 
+    // Update both videos array and category's videos array
     const updatedVideos = [...videos, video];
     setVideos(updatedVideos);
     localStorage.setItem("videos", JSON.stringify(updatedVideos));
-    setNewVideo({ title: "", url: "", categoryId: "" });
 
+    // Update the category's videos array
+    const updatedCategories = categories.map(category => {
+      if (category.id === video.categoryId) {
+        return {
+          ...category,
+          videos: [...category.videos, video.id]
+        };
+      }
+      return category;
+    });
+    localStorage.setItem("videoCategories", JSON.stringify(updatedCategories));
+
+    setNewVideo({ title: "", url: "", categoryId: "" });
     toast({
       title: "Success",
       description: `Video "${video.title}" has been added`,
+    });
+  };
+
+  const handleCopyProfileLink = (profileId: string) => {
+    const link = `${window.location.origin}/kids/${profileId}`;
+    navigator.clipboard.writeText(link);
+    toast({
+      title: "Link Copied",
+      description: "Profile link has been copied to clipboard",
     });
   };
 
