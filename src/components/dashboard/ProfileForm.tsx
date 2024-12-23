@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
@@ -29,6 +28,8 @@ export function ProfileForm() {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 
   const categories = JSON.parse(localStorage.getItem("videoCategories") || "[]");
+
+  console.log("Categories loaded:", categories); // Debug log
 
   const handleCreateProfile = () => {
     if (!newProfile.name || !newProfile.age) {
@@ -64,7 +65,7 @@ export function ProfileForm() {
   const getVideoCount = (profile) => {
     const videos = JSON.parse(localStorage.getItem("videos") || "[]");
     const profileVideos = videos.filter(video => 
-      profile.categories.includes(video.categoryId)
+      profile.categories.some(catId => video.categoryId === catId)
     );
     return profileVideos.length;
   };
@@ -108,27 +109,31 @@ export function ProfileForm() {
                 <CommandInput placeholder="Search categories..." />
                 <CommandEmpty>No category found.</CommandEmpty>
                 <CommandGroup>
-                  {categories.map((category) => (
-                    <CommandItem
-                      key={category.id}
-                      onSelect={() => {
-                        setSelectedCategories((prev) => {
-                          if (prev.includes(category.id)) {
-                            return prev.filter(id => id !== category.id);
-                          }
-                          return [...prev, category.id];
-                        });
-                      }}
-                    >
-                      <Check
-                        className={cn(
-                          "mr-2 h-4 w-4",
-                          selectedCategories.includes(category.id) ? "opacity-100" : "opacity-0"
-                        )}
-                      />
-                      {category.name}
-                    </CommandItem>
-                  ))}
+                  {categories && categories.length > 0 ? (
+                    categories.map((category) => (
+                      <CommandItem
+                        key={category.id}
+                        onSelect={() => {
+                          setSelectedCategories((prev) => {
+                            if (prev.includes(category.id)) {
+                              return prev.filter(id => id !== category.id);
+                            }
+                            return [...prev, category.id];
+                          });
+                        }}
+                      >
+                        <Check
+                          className={cn(
+                            "mr-2 h-4 w-4",
+                            selectedCategories.includes(category.id) ? "opacity-100" : "opacity-0"
+                          )}
+                        />
+                        {category.name}
+                      </CommandItem>
+                    ))
+                  ) : (
+                    <CommandItem disabled>No categories available</CommandItem>
+                  )}
                 </CommandGroup>
               </Command>
             </PopoverContent>
