@@ -41,6 +41,15 @@ export function ProfileForm() {
     });
   };
 
+  // Get videos from localStorage to count them
+  const getVideoCount = (profile) => {
+    const videos = JSON.parse(localStorage.getItem("videos") || "[]");
+    const profileVideos = videos.filter(video => 
+      profile.categories.includes(video.categoryId)
+    );
+    return profileVideos.length;
+  };
+
   return (
     <div className="grid gap-4">
       <Card>
@@ -75,7 +84,7 @@ export function ProfileForm() {
             </CardHeader>
             <CardContent>
               <p>Age: {profile.age}</p>
-              <p>Videos: {profile.videoIds.length}</p>
+              <p>Videos: {getVideoCount(profile)}</p>
               <p>Time Limit: {profile.timeLimit} minutes</p>
               <div className="mt-4 space-x-2">
                 <Button 
