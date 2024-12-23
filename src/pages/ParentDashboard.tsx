@@ -18,7 +18,7 @@ export default function ParentDashboard() {
       <nav className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold text-safeflix-primary">SafeFlix Dashboard</h1>
         <Button 
-          variant="outline" 
+          className="bg-green-500 hover:bg-green-600 text-white"
           onClick={() => {
             localStorage.removeItem("isParentLoggedIn");
             window.location.href = "/";
