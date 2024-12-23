@@ -87,7 +87,7 @@ const Index = () => {
                 localStorage.setItem('safeflix-last-page', 'learn-more');
                 navigate("/learn-more");
               }}
-              className="text-lg px-8 py-6 border-2 hover:bg-white/10 transition-all duration-300"
+              className="text-lg px-8 py-6 border-2 border-green-500 text-green-500 hover:bg-green-500/10 transition-all duration-300"
             >
               Learn More
             </Button>
