@@ -19,6 +19,8 @@ export function CategorySelector({
   open, 
   onOpenChange 
 }: CategorySelectorProps) {
+  console.log("CategorySelector rendered with categories:", categories);
+
   return (
     <Popover open={open} onOpenChange={onOpenChange}>
       <PopoverTrigger asChild>
@@ -39,11 +41,15 @@ export function CategorySelector({
           <CommandInput placeholder="Search categories..." />
           <CommandEmpty>No category found.</CommandEmpty>
           <CommandGroup>
-            {categories.length > 0 ? (
+            {categories && categories.length > 0 ? (
               categories.map((category) => (
                 <CommandItem
                   key={category.id}
-                  onSelect={() => onCategorySelect(category.id)}
+                  value={category.id}
+                  onSelect={() => {
+                    console.log("Category selected:", category.id);
+                    onCategorySelect(category.id);
+                  }}
                 >
                   <Check
                     className={cn(
