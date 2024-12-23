@@ -12,20 +12,12 @@ const Index = () => {
     const lastSession = localStorage.getItem('safeflix-session');
     if (lastSession) {
       console.log('Found previous session:', lastSession);
-      // You can use this to auto-redirect to dashboard if needed
     }
   }, []);
 
   const handleSignIn = () => {
-    // Store last login attempt timestamp
     localStorage.setItem('safeflix-last-login', new Date().toISOString());
     navigate("/login");
-  };
-
-  const handleGetStarted = () => {
-    // Store user's initial interaction
-    localStorage.setItem('safeflix-signup-started', 'true');
-    navigate("/signup");
   };
 
   return (
@@ -36,7 +28,7 @@ const Index = () => {
           onClick={handleSignIn}
           className="bg-safeflix-primary hover:bg-safeflix-primary/80 transition-all duration-300"
         >
-          Sign In
+          Parent Access
         </Button>
       </nav>
 
@@ -69,10 +61,10 @@ const Index = () => {
             <Button
               onMouseEnter={() => setIsHovered(true)}
               onMouseLeave={() => setIsHovered(false)}
-              onClick={handleGetStarted}
+              onClick={handleSignIn}
               className="bg-safeflix-primary hover:bg-safeflix-primary/80 text-lg px-8 py-6 transition-all duration-300 transform hover:scale-105"
             >
-              Get Started
+              Parent Access
               <motion.span
                 animate={{ x: isHovered ? 10 : 0 }}
                 transition={{ duration: 0.2 }}
