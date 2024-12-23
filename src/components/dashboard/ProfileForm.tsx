@@ -3,6 +3,21 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Check, ChevronsUpDown } from "lucide-react";
+import { cn } from "@/lib/utils";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+} from "@/components/ui/command"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
 
 export function ProfileForm() {
   const { toast } = useToast();
@@ -10,6 +25,10 @@ export function ProfileForm() {
     return JSON.parse(localStorage.getItem("kidsProfiles") || "[]");
   });
   const [newProfile, setNewProfile] = useState({ name: "", age: "" });
+  const [open, setOpen] = useState(false);
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+
+  const categories = JSON.parse(localStorage.getItem("videoCategories") || "[]");
 
   const handleCreateProfile = () => {
     if (!newProfile.name || !newProfile.age) {
@@ -25,8 +44,8 @@ export function ProfileForm() {
     const profile = {
       id: profileId,
       ...newProfile,
-      categories: [],
-      timeLimit: 120, // Default 2 hours in minutes
+      categories: selectedCategories,
+      timeLimit: 120,
       videoIds: [],
     };
 
@@ -35,13 +54,13 @@ export function ProfileForm() {
     localStorage.setItem("kidsProfiles", JSON.stringify(updatedProfiles));
 
     setNewProfile({ name: "", age: "" });
+    setSelectedCategories([]);
     toast({
       title: "Success",
       description: `Profile created for ${profile.name}`,
     });
   };
 
-  // Get videos from localStorage to count them
   const getVideoCount = (profile) => {
     const videos = JSON.parse(localStorage.getItem("videos") || "[]");
     const profileVideos = videos.filter(video => 
@@ -70,6 +89,50 @@ export function ProfileForm() {
               onChange={(e) => setNewProfile({ ...newProfile, age: e.target.value })}
             />
           </div>
+          <Popover open={open} onOpenChange={setOpen}>
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                role="combobox"
+                aria-expanded={open}
+                className="w-full justify-between"
+              >
+                {selectedCategories.length > 0
+                  ? `${selectedCategories.length} categories selected`
+                  : "Select categories..."}
+                <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-full p-0">
+              <Command>
+                <CommandInput placeholder="Search categories..." />
+                <CommandEmpty>No category found.</CommandEmpty>
+                <CommandGroup>
+                  {categories.map((category) => (
+                    <CommandItem
+                      key={category.id}
+                      onSelect={() => {
+                        setSelectedCategories((prev) => {
+                          if (prev.includes(category.id)) {
+                            return prev.filter(id => id !== category.id);
+                          }
+                          return [...prev, category.id];
+                        });
+                      }}
+                    >
+                      <Check
+                        className={cn(
+                          "mr-2 h-4 w-4",
+                          selectedCategories.includes(category.id) ? "opacity-100" : "opacity-0"
+                        )}
+                      />
+                      {category.name}
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              </Command>
+            </PopoverContent>
+          </Popover>
           <Button onClick={handleCreateProfile} className="w-full">
             Create Profile
           </Button>
@@ -86,6 +149,9 @@ export function ProfileForm() {
               <p>Age: {profile.age}</p>
               <p>Videos: {getVideoCount(profile)}</p>
               <p>Time Limit: {profile.timeLimit} minutes</p>
+              <p>Categories: {profile.categories.map(catId => 
+                categories.find(c => c.id === catId)?.name
+              ).join(", ")}</p>
               <div className="mt-4 space-x-2">
                 <Button 
                   variant="outline"

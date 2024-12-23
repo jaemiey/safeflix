@@ -18,18 +18,23 @@ export default function KidsView() {
     
     if (currentProfile) {
       setProfile(currentProfile);
-      // Check for temporary time limit
       const today = new Date().toISOString().split('T')[0];
       const timeLimit = currentProfile.temporaryTimeLimitDate === today
         ? currentProfile.temporaryTimeLimit
         : currentProfile.timeLimit;
       
-      setTimeRemaining(timeLimit * 60); // Convert to seconds
+      setTimeRemaining(timeLimit * 60);
       
       const allVideos = JSON.parse(localStorage.getItem("videos") || "[]");
-      const allCategories = JSON.parse(localStorage.getItem("videoCategories") || "[]");
+      // Filter videos based on profile's assigned categories
+      const profileVideos = allVideos.filter((video: any) => 
+        currentProfile.categories.includes(video.categoryId)
+      );
       
-      setVideos(allVideos);
+      const allCategories = JSON.parse(localStorage.getItem("videoCategories") || "[]")
+        .filter((cat: any) => currentProfile.categories.includes(cat.id));
+      
+      setVideos(profileVideos);
       setCategories(allCategories);
     } else {
       toast({
